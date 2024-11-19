@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Finance Tracker</title>
+  <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+  <header>
+    <h1>Welcome, <%= user.name %>!</h1>
+    <a href="/logout" class="logout-btn">Logout</a>
+  </header>
+
+  <div class="both">
+    
+    <div class="flexi">
+      <div class="flexi1">
+      <h2>Add Income</h2>
+      <form action="/add-income" method="POST">
+        <input type="text" name="source" placeholder="Source" required>
+        <input type="number" name="amount" placeholder="Amount" required>
+        <input type="date" name="date" required>
+        <button type="submit">Add Income</button>
+      </form>
+    </div>
+    <div class="flexi2">
+      <h2>Add Expense</h2>
+      <form action="/add-expense" method="POST">
+        <input type="text" name="category" placeholder="Category" required>
+        <input type="number" name="amount" placeholder="Amount" required>
+        <input type="date" name="date" required>
+        <button type="submit">Add Expense</button>
+      </form>
+    </div>
+    </div>
+  </div>
+
+  <!-- View Details Button with User ID -->
+  <a href="/view-records/<%= user.id %>" class="view-details-btn">View Details</a>
+</body>
+</html>

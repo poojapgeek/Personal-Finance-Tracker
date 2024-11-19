@@ -1,0 +1,260 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f5f7;
+  color: #522e6d;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #5a3d7e;
+  color: #fff;
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.logout-btn {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  background-color: #4e3263;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #3b2550;
+}
+
+/* Form Styles */
+form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+form input {
+  width: 95%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #5a3d7e;
+  
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #4e3263;
+}
+
+/* Table Styles */
+table {
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+table thead {
+  background-color: #5a3d7e;
+  color: #fff;
+}
+
+table th, table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: #f2e9f7;
+}
+
+table tbody tr:hover {
+  background-color: #e5d4f3;
+}
+
+/* Buttons */
+button, .view-details-btn, .home-btn {
+  background-color: #5a3d7e;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+button:hover, .view-details-btn:hover, .home-btn:hover {
+  background-color: #4e3263;
+}
+
+/* Add Income and Expense */
+header {
+  background-color: #5a3d7e;
+  
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+header .logout-btn {
+  background: #fff;
+  color: #5a3d7e;
+  
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+header .logout-btn:hover {
+  background: #5a009c;
+  color: #fff;
+}
+
+/* Main Container */
+.both {
+  padding: 20px;
+}
+
+.flexi {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  gap: 20px;
+}
+
+/* Forms */
+.flexi form {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 300px;
+  width: 100%;
+}
+
+.flexi h2 {
+  color: #6a0dad;
+  text-align: center;
+}
+
+.flexi input {
+  width: calc(100% - 20px);
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.flexi button {
+  width: 100%;
+  padding: 10px;
+  background-color: #5a3d7e;
+  
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.flexi button:hover {
+  background: #5a009c;
+}
+
+/* View Details Button */
+.view-details-btn {
+  display: inline-block;
+  margin: 20px auto;
+  text-align: center;
+  padding: 10px 20px;
+  background-color: #5a3d7e;
+  
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.view-details-btn:hover {
+  background: #5a009c;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .logout-btn {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+
+  form {
+    width: 90%;
+  }
+
+  .flexi {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+}

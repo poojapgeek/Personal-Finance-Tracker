@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Records</title>
+  <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+  <header>
+    <h1>Your Financial Records</h1>
+    <a href="/view-analytics" class="analytics-btn">View Analytics</a>
+
+  </header>
+
+  <h2>Income Records</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>Amount</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% incomes.forEach(income => { %>
+        <tr>
+          <td><%= income.source %></td>
+          <td>Rs. <%= income.amount %></td>
+          <td><%= income.date %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <h2>Expense Records</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% expenses.forEach(expense => { %>
+        <tr>
+          <td><%= expense.category %></td>
+          <td>Rs. <%= expense.amount %></td>
+          <td><%= expense.date %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <a href="/tracker" class="home-btn">Back to Home</a>
+</body>
+</html>
