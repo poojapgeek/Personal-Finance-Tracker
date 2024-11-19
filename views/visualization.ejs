@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Visualization</title>
+  <link rel="stylesheet" href="/styles/style1.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+  <h1>Financial Overview</h1>
+
+  <!-- Canvas for the Chart -->
+  <canvas id="visualizationChart" width="400" height="400"></canvas>
+
+  <!-- Suggestions Section -->
+  <div id="suggestionSection">
+    <p id="suggestionText"></p>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <button onclick="window.location.href='/tracker'">Back to Tracker</button>
+  <button onclick="window.location.href='/logout'">Logout</button>
+
+  <!-- Fetch and Render the Chart -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Fetch data from the server (API endpoint)
+        const response = await fetch('/api/visualization-data');
+        const { totalIncome, totalExpenses } = await response.json();
+
+        // Render the chart
+        const ctx = document.getElementById('visualizationChart').getContext('2d');
+        const data = {
+          labels: ['Income', 'Expenses'],
+          datasets: [{
+            label: 'Financial Overview',
+            data: [totalIncome, totalExpenses],
+            backgroundColor: ['#5e35b1', '#9c27b0'], // dark purple for income, light purple for expenses
+            hoverOffset: 4,
+          }],
+        };
+
+        new Chart(ctx, {
+          type: 'pie',
+          data: data,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+              },
+            },
+          },
+        });
+
+        // Generate suggestions based on the data
+        const suggestions = generateSuggestions(totalIncome, totalExpenses);
+        document.getElementById('suggestionText').textContent = suggestions;
+      } catch (error) {
+        console.error('Error loading data:', error);
+        document.getElementById('suggestionText').textContent = 'Failed to load suggestions.';
+      }
+    });
+
+    // Function to generate suggestions
+    function generateSuggestions(income, expenses) {
+      const savings = income - expenses;
+
+      if (savings > 0) {
+        return `Great job! You have a savings of ₹${savings.toFixed(2)}. Consider investing your savings to grow your wealth.`;
+      } else if (savings === 0) {
+        return 'You are breaking even. Try to reduce unnecessary expenses to save more.';
+      } else {
+        return `You are overspending by ₹${Math.abs(savings).toFixed(2)}. Consider reviewing your expenses and finding ways to cut costs.`;
+      }
+    }
+  </script>
+</body>
+</html>

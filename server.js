@@ -35,6 +35,31 @@ const ensureAuthenticated = (req, res, next) => {
     next();
   });
 };
+app.get('/api/visualization-data', ensureAuthenticated, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    // Fetch total income
+    const [incomes] = await db.query('SELECT SUM(amount) AS total_income FROM income WHERE user_id = ?', [userId]);
+    const totalIncome = incomes[0].total_income || 0;
+
+    // Fetch total expenses
+    const [expenses] = await db.query('SELECT SUM(amount) AS total_expenses FROM expense WHERE user_id = ?', [userId]);
+    const totalExpenses = expenses[0].total_expenses || 0;
+
+    // Send data as JSON to the frontend
+    res.json({ totalIncome, totalExpenses });
+  } catch (error) {
+    console.error('Error fetching visualization data:', error);
+    res.status(500).json({ error: 'Failed to fetch data' });
+  }
+});
+
+// Route to render the visualization page (Pie Chart)
+app.get('/visualization', ensureAuthenticated, (req, res) => {
+  res.render('visualization', { user: req.user });
+});
+
 
 // Routes
 app.get('/signup', (req, res) => res.render('signup'));
