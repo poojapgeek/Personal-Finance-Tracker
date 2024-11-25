@@ -9,8 +9,7 @@
 <body>
   <header>
     <h1>Your Financial Records</h1>
-    <a href="/view-analytics" class="analytics-btn">View Analytics</a>
-
+    
   </header>
 
   <h2>Income Records</h2>
@@ -54,8 +53,10 @@
   </table>
 
   <a href="/tracker" class="home-btn">Back to Home</a>
-  <form action="/visualization" method="get">
-    <button type="submit">View Financial Visualization</button>
-  </form>
+  <!-- Inside records.ejs -->
+<form action="/visualization" method="get">
+  <button type="submit">View Financial Visualization</button>
+</form>
+
 </body>
 </html>

@@ -4,48 +4,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Financial Visualization</title>
-  <link rel="stylesheet" href="/styles/style1.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <link rel="stylesheet" href="/styles/style1.css">
 </head>
 <body>
-  <h1>Financial Overview</h1>
+  <div class="container">
+    <h1>Financial Visualization Dashboard</h1>
 
-  <!-- Canvas for the Chart -->
-  <canvas id="visualizationChart" width="400" height="400"></canvas>
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <label for="monthFilter">Filter by Month:</label>
+      <select id="monthFilter">
+        <option value="">All Months</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+      <button id="applyFilter">Apply Filter</button>
+      <button id="darkModeToggle">Toggle Dark Mode</button>
+    </div>
 
-  <!-- Suggestions Section -->
-  <div id="suggestionSection">
-    <p id="suggestionText"></p>
+    <!-- Pie Chart -->
+    <div class="chart-card">
+      <h2>Income vs Expenses (Pie Chart)</h2>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="chart-card">
+      <h2>Monthly Income and Expenses (Bar Chart)</h2>
+      <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- Line Chart -->
+    <div class="chart-card">
+      <h2>Trend of Income and Expenses (Line Chart)</h2>
+      <canvas id="lineChart"></canvas>
+    </div>
+
+    <!-- Suggestions Section -->
+    <div id="suggestions">
+      <h2>Suggestions</h2>
+      <p id="suggestionText">Analyzing your data...</p>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div style="text-align: center;">
+      <button onclick="window.location.href='/tracker'" class="btn">Back to Tracker</button>
+      <button onclick="window.location.href='/logout'" class="btn">Logout</button>
+    </div>
   </div>
 
-  <!-- Navigation Buttons -->
-  <button onclick="window.location.href='/tracker'">Back to Tracker</button>
-  <button onclick="window.location.href='/logout'">Logout</button>
-
-  <!-- Fetch and Render the Chart -->
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
+    let pieChart, barChart, lineChart;
+
+    // Fetch data from the server
+    async function fetchData(month = '') {
       try {
-        // Fetch data from the server (API endpoint)
-        const response = await fetch('/api/visualization-data');
-        const { totalIncome, totalExpenses } = await response.json();
+        const response = await fetch(`/api/visualization-data${month ? `?month=${month}` : ''}`);
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return null;
+      }
+    }
 
-        // Render the chart
-        const ctx = document.getElementById('visualizationChart').getContext('2d');
-        const data = {
-          labels: ['Income', 'Expenses'],
-          datasets: [{
-            label: 'Financial Overview',
-            data: [totalIncome, totalExpenses],
-            backgroundColor: ['#5e35b1', '#9c27b0'], // dark purple for income, light purple for expenses
-            hoverOffset: 4,
-          }],
-        };
+    // Generate Suggestions
+    function generateSuggestions(totalIncome, totalExpenses) {
+      const suggestionText = document.getElementById('suggestionText');
+      let suggestion;
 
-        new Chart(ctx, {
+      if (totalIncome > totalExpenses) {
+        const savings = totalIncome - totalExpenses;
+        suggestion = `
+          Great! You have a surplus of ₹${savings}. 
+          Consider investing in mutual funds, stocks, or a high-yield savings account to grow your wealth.
+        `;
+      } else if (totalIncome < totalExpenses) {
+        const deficit = totalExpenses - totalIncome;
+        suggestion = `
+          You're spending ₹${deficit} more than your income. 
+          Review your expenses and identify areas to cut back, such as dining out or subscriptions.
+        `;
+      } else {
+        suggestion = `
+          Your income and expenses are balanced, but aim to save at least 20% of your income for future financial goals.
+        `;
+      }
+
+      suggestionText.innerHTML = suggestion;
+    }
+
+    // Render or update charts
+    async function renderCharts(month) {
+      const data = await fetchData(month);
+      if (!data) return;
+
+      const { totalIncome, totalExpenses, monthlyData } = data;
+
+      // Update suggestions
+      generateSuggestions(totalIncome, totalExpenses);
+
+      // Pie Chart: Update or Create
+      const pieCtx = document.getElementById('pieChart').getContext('2d');
+      if (pieChart) {
+        pieChart.data.datasets[0].data = [totalIncome, totalExpenses];
+        pieChart.update();
+      } else {
+        pieChart = new Chart(pieCtx, {
           type: 'pie',
-          data: data,
+          data: {
+            labels: ['Income', 'Expenses'],
+            datasets: [{
+              data: [totalIncome, totalExpenses],
+              backgroundColor: ['#9575cd', '#ba68c8'], // Purple shades
+            }],
+          },
           options: {
             responsive: true,
             plugins: {
@@ -53,30 +136,109 @@
                 position: 'bottom',
               },
             },
+            animation: {
+              duration: 1000,
+              easing: 'easeInOutQuad',
+            },
           },
         });
-
-        // Generate suggestions based on the data
-        const suggestions = generateSuggestions(totalIncome, totalExpenses);
-        document.getElementById('suggestionText').textContent = suggestions;
-      } catch (error) {
-        console.error('Error loading data:', error);
-        document.getElementById('suggestionText').textContent = 'Failed to load suggestions.';
       }
-    });
 
-    // Function to generate suggestions
-    function generateSuggestions(income, expenses) {
-      const savings = income - expenses;
-
-      if (savings > 0) {
-        return `Great job! You have a savings of ₹${savings.toFixed(2)}. Consider investing your savings to grow your wealth.`;
-      } else if (savings === 0) {
-        return 'You are breaking even. Try to reduce unnecessary expenses to save more.';
+      // Bar Chart: Update or Create
+      const barCtx = document.getElementById('barChart').getContext('2d');
+      if (barChart) {
+        barChart.data.labels = monthlyData.map((d) => `Month ${d.month}`);
+        barChart.data.datasets[0].data = monthlyData.map((d) => d.total_income);
+        barChart.data.datasets[1].data = monthlyData.map((d) => d.total_expenses);
+        barChart.update();
       } else {
-        return `You are overspending by ₹${Math.abs(savings).toFixed(2)}. Consider reviewing your expenses and finding ways to cut costs.`;
+        barChart = new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: monthlyData.map((d) => `Month ${d.month}`),
+            datasets: [
+              {
+                label: 'Income',
+                data: monthlyData.map((d) => d.total_income),
+                backgroundColor: '#9575cd',
+              },
+              {
+                label: 'Expenses',
+                data: monthlyData.map((d) => d.total_expenses),
+                backgroundColor: '#ba68c8',
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+            },
+            animation: {
+              duration: 1000,
+              easing: 'easeInOutQuad',
+            },
+          },
+        });
+      }
+
+      // Line Chart: Update or Create
+      const lineCtx = document.getElementById('lineChart').getContext('2d');
+      if (lineChart) {
+        lineChart.data.labels = monthlyData.map((d) => `Month ${d.month}`);
+        lineChart.data.datasets[0].data = monthlyData.map((d) => d.total_income);
+        lineChart.data.datasets[1].data = monthlyData.map((d) => d.total_expenses);
+        lineChart.update();
+      } else {
+        lineChart = new Chart(lineCtx, {
+          type: 'line',
+          data: {
+            labels: monthlyData.map((d) => `Month ${d.month}`),
+            datasets: [
+              {
+                label: 'Income',
+                data: monthlyData.map((d) => d.total_income),
+                borderColor: '#9575cd',
+                backgroundColor: 'rgba(149, 117, 205, 0.5)',
+              },
+              {
+                label: 'Expenses',
+                data: monthlyData.map((d) => d.total_expenses),
+                borderColor: '#ba68c8',
+                backgroundColor: 'rgba(186, 104, 200, 0.5)',
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+            },
+            animation: {
+              duration: 1000,
+              easing: 'easeInOutQuad',
+            },
+          },
+        });
       }
     }
+
+    // Event Listeners
+    document.getElementById('applyFilter').addEventListener('click', () => {
+      const month = document.getElementById('monthFilter').value;
+      renderCharts(month);
+    });
+
+    document.getElementById('darkModeToggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    // Initial Render
+    renderCharts();
   </script>
 </body>
 </html>
